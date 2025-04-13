@@ -304,51 +304,237 @@ using namespace std;
 
 //Trie
 
-//Trie:高效地存储和查找字符串集合的数据结构
-const int N = 100010;  // 定义Trie树的最大节点数量
+////Trie:高效地存储和查找字符串集合的数据结构
+//const int N = 100010;  // 定义Trie树的最大节点数量
+//
+//int son[N][26], cnt[N], idx;
+//// son[N][26]: 每个节点最多有26个子节点（对应26个小写字母）
+//// cnt[N]: 以当前节点结尾的单词数量
+//// idx: 当前可用的节点编号（从1开始分配）
+//
+////插入操作
+//void insert(char str[])
+//{
+//    int p = 0;  // 从根节点开始（根节点编号为0）
+//    for (int i = 0; str[i]; i++)  // 遍历字符串中的每个字符
+//    {
+//        int u = str[i] - 'a';  // 将字符转换为0-25的数字（a-z）
+//        if (!son[p][u]) son[p][u] = ++idx;  // 如果不存在对应子节点，则创建新节点
+//        p = son[p][u];  // 移动到子节点
+//    }
+//    cnt[p]++;  // 标记单词结束，增加计数器
+//}
+//
+////查询操作
+//int query(char str[])
+//{
+//    int p = 0;  // 从根节点开始
+//    for (int i = 0; str[i]; i++)  // 遍历字符串中的每个字符
+//    {
+//        int u = str[i] - 'a';  // 将字符转换为0-25的数字
+//        if (!son[p][u]) return 0;  // 如果路径不存在，返回0（表示没找到）
+//        p = son[p][u];  // 移动到子节点
+//    }
+//    return cnt[p];  // 返回以该节点结尾的单词数量
+//}
+//
+//int main()
+//{
+//    int n;
+//    scanf("%d", &n);  // 输入操作数量
+//    while (n--)
+//    {
+//        char op[2];
+//        char str[N];  // 这里代码中缺少str的定义，实际应该添加
+//        scanf("%s%s", op, str);  // 输入操作类型和字符串
+//        if (op[0] == 'I') insert(str);  // 插入操作
+//        else printf("%d\n", query(str));  // 查询操作并输出结果
+//    }
+//    return 0;
+//}
 
-int son[N][26], cnt[N], idx;
-// son[N][26]: 每个节点最多有26个子节点（对应26个小写字母）
-// cnt[N]: 以当前节点结尾的单词数量
-// idx: 当前可用的节点编号（从1开始分配）
+//并查集
 
-//插入操作
-void insert(char str[])
+//const int N = 100010;  // 定义最大元素数量
+//int n, m;              // n-元素数量，m-操作数量
+//int p[N];              // 父节点数组，用于表示每个元素的父节点
+//
+//// 查找函数：返回x的祖宗节点 + 路径压缩
+//int find(int x) {
+//    // 如果x不是自己的父节点（不是根节点）
+//    if (p[x] != x)
+//        p[x] = find(p[x]);  // 递归查找祖宗节点，并进行路径压缩
+//    return p[x];            // 返回祖宗节点
+//}
+//
+//int main() {
+//    scanf("%d%d", &n, &m);  // 读取元素数量n和操作数量m
+//
+//    // 初始化并查集，每个元素的父节点指向自己
+//    for (int i = 1; i <= n; i++) p[i] = i;
+//
+//    while (m--) {  // 处理每个操作
+//        char op[2];  // 操作类型
+//        int a, b;    // 操作涉及的两个元素
+//        scanf("%s%d%d", op, &a, &b);  // 读取操作和元素
+//        //推荐使用“%d”来读取字符串，因为如果用“%c”可能会读取空格或者回车
+//
+//        if (op[0] == 'M') {  // 如果是合并操作
+//            p[find(a)] = find(b);  // 将a的祖宗节点的父节点设为b的祖宗节点
+//        }
+//        else {  // 如果是查询操作
+//            // 判断a和b是否属于同一集合
+//            if (find(a) == find(b))
+//                puts("Yes");  // 属于同一集合
+//            else
+//                puts("No");   // 不属于同一集合
+//        }
+//    }
+//
+//    return 0;
+//}
+
+//手写堆
+
+//#include <algorithm>  // 包含swap函数
+//
+//const int N = 100010;  // 定义堆的最大容量
+//
+//int n, m;      // n-堆中元素数量，m-要输出的前m个最小元素
+//int h[N];      // 堆的存储数组(从索引1开始使用)
+//int heap_size;      // 当前堆的大小
+//
+//// 下沉操作：调整以u为根的子树，使其满足堆的性质
+//void down(int u) {
+//    int t = u;  // t记录最小值的索引
+//    // 如果左子节点存在且比当前节点小
+//    if (u * 2 <= heap_size && h[u * 2] < h[t]) t = u * 2;
+//    // 如果右子节点存在且比当前节点小
+//    if (u * 2 + 1 <= heap_size && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
+//    // 如果最小值不是当前节点
+//    if (u != t) {
+//        swap(h[u], h[t]);  // 交换当前节点与最小值节点
+//        down(t);           // 递归调整交换后的子树
+//    }
+//}
+//
+//// 上浮操作：将节点u向上调整到合适位置，以维护堆的性质
+//void up(int u)
+//{
+//    // 当u不是根节点(u/2是父节点)，且父节点的值大于当前节点时
+//    while (u / 2 && h[u / 2] > h[u])
+//    {
+//        // 交换当前节点与其父节点的值
+//        swap(h[u / 2], h[u]);
+//        // 将当前节点指针移动到父节点位置
+//        u /= 2;
+//    }
+//}
+//
+//int main() {
+//    scanf("%d%d", &n, &m);  // 读取元素数量n和要输出的前m个元素
+//    for (int i = 1; i <= n; i++) scanf("%d", &h[i]);  // 读取堆元素
+//    heap_size = n;  // 初始化堆大小
+//
+//    // 建堆：从最后一个非叶子节点开始向下调整
+//    // 时间复杂度O(n)，比逐个插入的O(nlogn)更优
+//    for (int i = n / 2; i; i--) down(i);
+//
+//    // 输出前m个最小元素(堆排序的核心过程)
+//    while (m--) {
+//        printf("%d ", h[1]);  // 输出堆顶(当前最小值)
+//        h[1] = h[heap_size];      // 用最后一个元素替换堆顶
+//        heap_size--;              // 堆大小减1
+//        down(1);             // 从新的堆顶开始向下调整
+//    }
+//
+//    return 0;
+//}
+
+//堆——进阶版
+
+#include <algorithm>
+#include <string.h>
+
+const int N = 100010;
+
+int h[N], ph[N], hp[N], heap_size;
+// h[N] 是堆数组，存储实际的元素值
+// ph[N] ("pointer to heap") 保存第k个插入的点在堆中的位置
+// hp[N] ("heap to pointer") 保存堆中某个点是第几个插入的
+// heap_size 是当前堆的大小
+
+void heap_swap(int a, int b)
 {
-    int p = 0;  // 从根节点开始（根节点编号为0）
-    for (int i = 0; str[i]; i++)  // 遍历字符串中的每个字符
-    {
-        int u = str[i] - 'a';  // 将字符转换为0-25的数字（a-z）
-        if (!son[p][u]) son[p][u] = ++idx;  // 如果不存在对应子节点，则创建新节点
-        p = son[p][u];  // 移动到子节点
-    }
-    cnt[p]++;  // 标记单词结束，增加计数器
+    swap(ph[hp[a]], ph[hp[b]]); // 交换两个元素在ph数组中的位置记录
+    swap(hp[a], hp[b]);         // 交换两个元素的插入次序记录
+    swap(h[a], h[b]);           // 交换两个元素的实际值
 }
 
-//查询操作
-int query(char str[])
+void down(int u)
 {
-    int p = 0;  // 从根节点开始
-    for (int i = 0; str[i]; i++)  // 遍历字符串中的每个字符
+    int t = u; // t保存最小值的下标，初始为当前节点
+    // 与左子节点比较
+    if (u * 2 <= heap_size && h[u * 2] < h[t]) t = u * 2;
+    // 与右子节点比较
+    if (u * 2 + 1 <= heap_size && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
+    if (u != t) // 如果子节点比当前节点小
     {
-        int u = str[i] - 'a';  // 将字符转换为0-25的数字
-        if (!son[p][u]) return 0;  // 如果路径不存在，返回0（表示没找到）
-        p = son[p][u];  // 移动到子节点
+        heap_swap(u, t); // 交换两者
+        down(t);        // 递归调整
     }
-    return cnt[p];  // 返回以该节点结尾的单词数量
+}
+
+void up(int u)
+{
+    while (u / 2 && h[u / 2] > h[u]) // 如果父节点存在且比当前节点大
+    {
+        heap_swap(u / 2, u); // 交换两者
+        u /= 2;              // 继续向上检查
+    }
 }
 
 int main()
 {
-    int n;
-    scanf("%d", &n);  // 输入操作数量
+    int n, m = 0; // n是操作次数，m记录插入的序号
+    scanf("%d", &n);
+
     while (n--)
     {
-        char op[2];
-        char str[N];  // 这里代码中缺少str的定义，实际应该添加
-        scanf("%s%s", op, str);  // 输入操作类型和字符串
-        if (op[0] == 'I') insert(str);  // 插入操作
-        else printf("%d\n", query(str));  // 查询操作并输出结果
+        char op[10];
+        int k, x;
+
+        scanf("%s", op);
+        if (!strcmp(op, "I")) // 插入操作    strcmp(op, "I") 是 C/C++ 标准库函数，用于比较两个字符串 op 和 "I" 是否相同
+        {
+            scanf("%d", &x);
+            heap_size++; // 堆大小增加
+            m++;    // 插入序号增加
+            ph[m] = heap_size, hp[heap_size] = m; // 记录插入位置关系
+            h[heap_size] = x;    // 将x放入堆尾
+            up(heap_size);       // 上浮调整堆
+        }
+        else if (!strcmp(op, "PM")) printf("%d\n", h[1]); // 输出堆顶（最小值）
+        else if (!strcmp(op, "DM")) // 删除堆顶
+        {
+            heap_swap(1, heap_size); // 将堆顶与堆尾交换
+            heap_size--;             // 堆大小减小
+            down(1);           // 下沉调整堆
+        }
+        else if (!strcmp(op, "D")) // 删除第k个插入的元素
+        {
+            scanf("%d", &k);
+            k = ph[k];          // 找到第k个插入的元素在堆中的位置
+            heap_swap(k, heap_size); // 与堆尾交换
+            heap_size--;            // 堆大小减小
+            down(k), up(k);     // 调整堆（只需执行其中一个，这里都调用保证正确）
+        }
+        else // 修改第k个插入的元素
+        {
+            scanf("%d%d", &k, &x);
+            k = ph[k];      // 找到第k个插入的元素在堆中的位置
+            h[k] = x;       // 修改值
+            down(k), up(k); // 调整堆
+        }
     }
-    return 0;
 }
