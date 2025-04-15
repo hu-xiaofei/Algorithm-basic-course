@@ -453,88 +453,479 @@ using namespace std;
 
 //堆——进阶版
 
-#include <algorithm>
-#include <string.h>
+//#include <algorithm>
+//#include <string.h>
+//
+//const int N = 100010;
+//
+//int h[N], ph[N], hp[N], heap_size;
+//// h[N] 是堆数组，存储实际的元素值
+//// ph[N] ("pointer to heap") 保存第k个插入的点在堆中的位置
+//// hp[N] ("heap to pointer") 保存堆中某个点是第几个插入的
+//// heap_size 是当前堆的大小
+//
+//void heap_swap(int a, int b)
+//{
+//    swap(ph[hp[a]], ph[hp[b]]); // 交换两个元素在ph数组中的位置记录
+//    swap(hp[a], hp[b]);         // 交换两个元素的插入次序记录
+//    swap(h[a], h[b]);           // 交换两个元素的实际值
+//}
+//
+//void down(int u)
+//{
+//    int t = u; // t保存最小值的下标，初始为当前节点
+//    // 与左子节点比较
+//    if (u * 2 <= heap_size && h[u * 2] < h[t]) t = u * 2;
+//    // 与右子节点比较
+//    if (u * 2 + 1 <= heap_size && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
+//    if (u != t) // 如果子节点比当前节点小
+//    {
+//        heap_swap(u, t); // 交换两者
+//        down(t);        // 递归调整
+//    }
+//}
+//
+//void up(int u)
+//{
+//    while (u / 2 && h[u / 2] > h[u]) // 如果父节点存在且比当前节点大
+//    {
+//        heap_swap(u / 2, u); // 交换两者
+//        u /= 2;              // 继续向上检查
+//    }
+//}
+//
+//int main()
+//{
+//    int n, m = 0; // n是操作次数，m记录插入的序号
+//    scanf("%d", &n);
+//
+//    while (n--)
+//    {
+//        char op[10];
+//        int k, x;
+//
+//        scanf("%s", op);
+//        if (!strcmp(op, "I")) // 插入操作    strcmp(op, "I") 是 C/C++ 标准库函数，用于比较两个字符串 op 和 "I" 是否相同
+//        {
+//            scanf("%d", &x);
+//            heap_size++; // 堆大小增加
+//            m++;    // 插入序号增加
+//            ph[m] = heap_size, hp[heap_size] = m; // 记录插入位置关系
+//            h[heap_size] = x;    // 将x放入堆尾
+//            up(heap_size);       // 上浮调整堆
+//        }
+//        else if (!strcmp(op, "PM")) printf("%d\n", h[1]); // 输出堆顶（最小值）
+//        else if (!strcmp(op, "DM")) // 删除堆顶
+//        {
+//            heap_swap(1, heap_size); // 将堆顶与堆尾交换
+//            heap_size--;             // 堆大小减小
+//            down(1);           // 下沉调整堆
+//        }
+//        else if (!strcmp(op, "D")) // 删除第k个插入的元素
+//        {
+//            scanf("%d", &k);
+//            k = ph[k];          // 找到第k个插入的元素在堆中的位置
+//            heap_swap(k, heap_size); // 与堆尾交换
+//            heap_size--;            // 堆大小减小
+//            down(k), up(k);     // 调整堆（只需执行其中一个，这里都调用保证正确）
+//        }
+//        else // 修改第k个插入的元素
+//        {
+//            scanf("%d%d", &k, &x);
+//            k = ph[k];      // 找到第k个插入的元素在堆中的位置
+//            h[k] = x;       // 修改值
+//            down(k), up(k); // 调整堆
+//        }
+//    }
+//}
 
-const int N = 100010;
+//哈希表——拉链法
 
-int h[N], ph[N], hp[N], heap_size;
-// h[N] 是堆数组，存储实际的元素值
-// ph[N] ("pointer to heap") 保存第k个插入的点在堆中的位置
-// hp[N] ("heap to pointer") 保存堆中某个点是第几个插入的
-// heap_size 是当前堆的大小
+//#include <cstring> // memset需要
+//
+//const int N = 100003;  // 哈希表的大小，通常选择一个质数以减少冲突
+//
+//int h[N], e[N], ne[N], idx;  // h:哈希表头指针数组, e:存储元素值, ne:存储下一个节点索引, idx:当前可用索引
+//
+//void insert(int x)
+//{
+//    int k = (x % N + N) % N;  // 计算哈希值，确保k为正数
+//    e[idx] = x;               // 存储元素值x到e数组
+//    ne[idx] = h[k];           // 新节点的next指向当前链表的头节点
+//    h[k] = idx++;             // 更新头节点为当前新节点，并递增idx
+//}
+//
+//bool find(int x)
+//{
+//    int k = (x % N + N) % N;  // 计算哈希值，与insert中一致
+//    for (int i = h[k]; i != -1; i = ne[i])  // 遍历链表
+//        if (e[i] == x)        // 如果找到相同的值
+//            return true;       // 返回true
+//
+//    return false;             // 遍历完链表没找到，返回false
+//}
+//
+//int main()
+//{
+//    int n;
+//    scanf("%d", &n);          // 读取操作数量
+//
+//    memset(h, -1, sizeof h);  // 初始化哈希表头指针为-1（表示空链表）
+//
+//    while (n--)               // 处理n个操作
+//    {
+//        char op[2];
+//        int x;
+//        scanf("%s%d", op, &x);  // 读取操作类型和数值
+//
+//        if (*op == 'I')         // 如果是插入操作
+//            insert(x);          // 调用插入函数
+//        else                    // 否则是查询操作
+//        {
+//            if (find(x))        // 调用查找函数
+//                puts("yes");    // 找到输出"yes"
+//            else
+//                puts("No");    // 未找到输出"No"（注意大小写不一致）
+//        }
+//    }
+//
+//    return 0;
+//}
 
-void heap_swap(int a, int b)
-{
-    swap(ph[hp[a]], ph[hp[b]]); // 交换两个元素在ph数组中的位置记录
-    swap(hp[a], hp[b]);         // 交换两个元素的插入次序记录
-    swap(h[a], h[b]);           // 交换两个元素的实际值
-}
+//哈希表——开放寻址法
 
-void down(int u)
-{
-    int t = u; // t保存最小值的下标，初始为当前节点
-    // 与左子节点比较
-    if (u * 2 <= heap_size && h[u * 2] < h[t]) t = u * 2;
-    // 与右子节点比较
-    if (u * 2 + 1 <= heap_size && h[u * 2 + 1] < h[t]) t = u * 2 + 1;
-    if (u != t) // 如果子节点比当前节点小
-    {
-        heap_swap(u, t); // 交换两者
-        down(t);        // 递归调整
-    }
-}
+//#include <cstring>
+//
+//const int N = 200003, null = 0x3f3f3f3f;
+//// N: 哈希表大小，通常取数据规模的2-3倍的质数
+//// null: 特殊值，表示空位置，0x3f3f3f3f是一个很大的数，通常不会用作实际数据
+//
+//int h[N];  // 哈希表数组
+//
+//int find(int x) //(蹲坑法寻找)
+//{
+//    int k = (x % N + N) % N;  // 计算初始哈希值，确保为正数
+//
+//    // 线性探测查找位置
+//    while (h[k] != null && h[k] != x)  // 当位置不空且不是目标值时继续查找
+//    {
+//        k++;          // 检查下一个位置
+//        if (k == N)   // 如果到达数组末尾
+//            k = 0;    // 回到数组开头
+//    }
+//    return k;  // 返回找到的位置（可能是空位或目标位置）
+//}
+//
+//int main()
+//{
+//    int n;
+//    scanf("%d", &n);  // 读取操作数量
+//
+//    // 初始化哈希表，所有位置设为null
+//    memset(h, 0x3f, sizeof h);  // 0x3f是0x3f3f3f3f的缩写形式
+//
+//    while (n--)  // 处理n个操作
+//    {
+//        char op[2];
+//        int x;
+//        scanf("%s%d", op, &x);  // 读取操作类型和数值
+//
+//        int k = find(x);  // 查找x应该在的位置
+//
+//        if (*op == 'I')   // 插入操作
+//            h[k] = x;     // 在找到的位置插入x
+//        else              // 查询操作
+//        {
+//            if (h[k] != null)  // 如果位置不为空
+//                puts("Yes");   // 表示存在
+//            else
+//                puts("No");    // 表示不存在
+//        }
+//    }
+//
+//    return 0;
+//}
 
-void up(int u)
-{
-    while (u / 2 && h[u / 2] > h[u]) // 如果父节点存在且比当前节点大
-    {
-        heap_swap(u / 2, u); // 交换两者
-        u /= 2;              // 继续向上检查
-    }
-}
+//哈希表——字符串哈希方式
 
-int main()
-{
-    int n, m = 0; // n是操作次数，m记录插入的序号
-    scanf("%d", &n);
+//typedef unsigned long long ULL; // 定义无符号长整型别名，用于存储哈希值,可以少打一些字
+//
+//const int N = 100010, P = 131; // N是字符串最大长度，P是哈希基数（通常取质数）
+//
+//int n, m;       // n:字符串长度，m:查询次数
+//char str[N];    // 存储输入的字符串（从str[1]开始）
+//ULL h[N], p[N]; // h[i]存储前i个字符的哈希值，p[i]存储P的i次方
+//
+//// 计算子串str[l..r]的哈希值
+////使用unsigned long long可以自动处理溢出（利用模2^64的特性）
+//ULL get(int l, int r)
+//{
+//    // 公式：h[r] - h[l-1] * p[r-l+1]
+//    // 相当于将前l-1位的哈希值"左移"到与h[r]对齐后相减
+//    return h[r] - h[l - 1] * p[r - l + 1];
+//}
+//
+//int main() {
+//    // 输入字符串长度n，查询次数m，以及字符串本身（从str[1]开始存储）
+//    scanf("%d%d%s", &n, &m, str + 1);
+//
+//    // 初始化p[0] = P^0 = 1
+//    p[0] = 1;
+//
+//    // 预处理计算哈希数组h和幂数组p
+//    for (int i = 1; i <= n; i++)
+//    {
+//        p[i] = p[i - 1] * P; // p[i] = P^i
+//        h[i] = h[i - 1] * P + str[i]; // 递推计算前i个字符的哈希值
+//    }
+//
+//    // 处理m个查询
+//    while (m--)
+//    {
+//        int l1, r1, l2, r2;
+//        // 输入两个子串的起始和结束位置
+//        scanf("%d%d%d%d", &l1, &r1, &l2, &r2);
+//
+//        // 比较两个子串的哈希值
+//        if (get(l1, r1) == get(l2, r2)) puts("Yes");
+//        else puts("No");
+//    }
+//    return 0;
+//}
 
-    while (n--)
-    {
-        char op[10];
-        int k, x;
+//STL（Standard Template Library，标准模板库）————提供了一系列通用的模板类和函数
 
-        scanf("%s", op);
-        if (!strcmp(op, "I")) // 插入操作    strcmp(op, "I") 是 C/C++ 标准库函数，用于比较两个字符串 op 和 "I" 是否相同
-        {
-            scanf("%d", &x);
-            heap_size++; // 堆大小增加
-            m++;    // 插入序号增加
-            ph[m] = heap_size, hp[heap_size] = m; // 记录插入位置关系
-            h[heap_size] = x;    // 将x放入堆尾
-            up(heap_size);       // 上浮调整堆
-        }
-        else if (!strcmp(op, "PM")) printf("%d\n", h[1]); // 输出堆顶（最小值）
-        else if (!strcmp(op, "DM")) // 删除堆顶
-        {
-            heap_swap(1, heap_size); // 将堆顶与堆尾交换
-            heap_size--;             // 堆大小减小
-            down(1);           // 下沉调整堆
-        }
-        else if (!strcmp(op, "D")) // 删除第k个插入的元素
-        {
-            scanf("%d", &k);
-            k = ph[k];          // 找到第k个插入的元素在堆中的位置
-            heap_swap(k, heap_size); // 与堆尾交换
-            heap_size--;            // 堆大小减小
-            down(k), up(k);     // 调整堆（只需执行其中一个，这里都调用保证正确）
-        }
-        else // 修改第k个插入的元素
-        {
-            scanf("%d%d", &k, &x);
-            k = ph[k];      // 找到第k个插入的元素在堆中的位置
-            h[k] = x;       // 修改值
-            down(k), up(k); // 调整堆
-        }
-    }
-}
+//C++ STL 常用容器整理（代码注释版）
+
+//#include <vector>
+//#include <string>
+//#include <queue>
+//#include <stack>
+//#include <deque>
+//#include <utility>  // for pair
+//
+// // 1. vector（变长数组）示例
+//void vector_example() {
+//    std::vector<int> v;  // 声明整型vector
+//
+//    // 基本操作
+//    v.push_back(1);      // 尾部插入元素 O(1) 均摊
+//    v.pop_back();        // 删除尾部元素 O(1)
+//    v.size();            // 元素个数 O(1)
+//    v.empty();           // 判空 O(1)
+//    v.clear();           // 清空 O(n)
+//
+//    // 访问元素
+//    int a = v[0];        // 随机访问 O(1)
+//    int b = v.front();    // 首元素 O(1)
+//    int c = v.back();     // 尾元素 O(1)
+//
+//    // 遍历
+//    for (auto x : v) { /*...*/ }
+//    for (auto it = v.begin(); it != v.end(); ++it) { /*...*/ }
+//}
+//
+//// 2. string（字符串）示例
+//void string_example() {
+//    std::string s = "hello";
+//
+//    // 基本操作
+//    s.push_back('!');    // 尾部添加字符
+//    s.pop_back();        // 删除尾部字符
+//    s.size();            // 长度（同length()）
+//    s.empty();           // 判空
+//    s.clear();           // 清空
+//
+//    // 子串操作
+//    std::string sub = s.substr(1, 3);  // 从位置1开始取3个字符
+//    const char* cs = s.c_str();        // 转C风格字符串
+//
+//    // 拼接
+//    s += " world";       // 字符串拼接
+//}
+//
+//// 3. deque（双端队列）示例
+//void deque_example() {
+//    std::deque<int> dq;
+//
+//    // 双端操作
+//    dq.push_back(2);     // 尾部插入 O(1)
+//    dq.push_front(1);    // 头部插入 O(1)
+//    dq.pop_back();       // 尾部删除 O(1)
+//    dq.pop_front();      // 头部删除 O(1)
+//
+//    // 访问
+//    int x = dq[0];       // 随机访问 O(1)
+//    int y = dq.front();  // 头部元素 O(1)
+//    int z = dq.back();   // 尾部元素 O(1)
+//}
+//
+//// 4. stack（栈）示例
+//void stack_example() {
+//    std::stack<int> st;
+//
+//    st.push(1);          // 压栈 O(1)
+//    st.pop();            // 弹栈 O(1)（无返回值）
+//    int top = st.top();   // 查看栈顶 O(1)
+//    st.size();           // 元素个数
+//    bool e = st.empty(); // 判空
+//}
+//
+//// 5. queue（队列）示例
+//void queue_example() {
+//    std::queue<int> q;
+//
+//    q.push(1);           // 入队 O(1)
+//    q.pop();             // 出队 O(1)（无返回值）
+//    int front = q.front();// 队首 O(1)
+//    int back = q.back();  // 队尾 O(1)
+//    q.size();            // 元素个数
+//    bool e = q.empty();  // 判空
+//}
+//
+//// 6. priority_queue（优先队列）示例
+//void priority_queue_example() {
+//    // 默认大根堆（降序）
+//    std::priority_queue<int> max_heap;
+//
+//    // 小根堆（升序）声明方式
+//    std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+//
+//    max_heap.push(3);     // 插入元素 O(logn)
+//    max_heap.pop();       // 删除堆顶 O(logn)
+//    int top = max_heap.top(); // 查看堆顶 O(1)
+//}
+//
+//// 7. pair（键值对）示例
+//void pair_example() {
+//    std::pair<int, std::string> p1(1, "apple");
+//    auto p2 = std::make_pair(2, "banana");  // 自动推导类型
+//
+//    // 访问成员
+//    int id = p1.first;
+//    std::string name = p1.second;
+//
+//    // 比较运算（先比较first，再比较second）
+//    if (p1 < p2) { /*...*/ }
+//}
+//
+//// 各容器特性总结：
+////
+////vector - 动态数组，支持快速随机访问
+////string - 专为字符串设计，支持拼接和子串操作
+////deque  - 双端队列，支持首尾快速插入删除
+////stack  - LIFO（后进先出）结构
+////queue  - FIFO（先进先出）结构
+////priority_queue - 堆结构，默认大根堆
+////pair   - 存储两个元素的简单结构体
+////
+////注：所有size()/empty()操作时间复杂度均为O(1)
+////
+
+ // C++ STL 关联容器与bitset整理（代码注释版）
+
+//#include <set>
+//#include <map>
+//#include <unordered_set>
+//#include <unordered_map>
+//#include <bitset>
+//
+//  // 1. set/multiset 示例
+//void set_example() {
+//    std::set<int> s;         // 有序集合（元素唯一）
+//    std::multiset<int> ms;    // 有序多重集合（可重复）
+//
+//    // 插入元素
+//    s.insert(3);             // O(logn)
+//    ms.insert(3); ms.insert(3); // 可重复插入
+//
+//    // 查找操作
+//    auto it = s.find(3);     // 返回迭代器，未找到返回end() O(logn)
+//    int cnt = ms.count(3);    // 返回元素个数 O(k + logn)
+//
+//    // 删除操作
+//    s.erase(3);              // 删除所有值为3的元素 O(k + logn)
+//    ms.erase(ms.find(3));    // 只删除一个迭代器指向的元素 O(1)
+//
+//    // 边界查找
+//    auto lb = s.lower_bound(2); // 第一个>=2的元素 O(logn)
+//    auto ub = s.upper_bound(4); // 第一个>4的元素 O(logn)
+//}
+//
+//// 2. map/multimap 示例
+//void map_example() {
+//    std::map<std::string, int> m;     // 有序映射（key唯一）
+//    std::multimap<std::string, int> mm; // 有序多重映射（key可重复）
+//
+//    // 插入元素（pair）
+//    m.insert({ "apple", 5 });          // O(logn)
+//    mm.insert({ "apple", 5 }); mm.insert({ "apple", 3 });
+//
+//    // 访问元素（仅map有[]操作）
+//    int val = m["apple"];            // 访问/创建 O(logn)
+//    // mm["apple"]  // 错误！multimap没有[]运算符
+//
+//    // 查找与删除
+//    auto it = m.find("apple");       // O(logn)
+//    m.erase("apple");                // 按key删除 O(k + logn)
+//    mm.erase(mm.find("apple"));      // 按迭代器删除 O(1)
+//}
+//
+//// 3. 无序容器（哈希表实现）示例
+//void unordered_example() {
+//    std::unordered_set<int> us;      // 哈希集合
+//    std::unordered_map<int, int> um; // 哈希映射
+//
+//    // 基本操作（与有序版本接口相同）
+//    us.insert(3);                    // 平均O(1)
+//    um[3] = 5;                       // 平均O(1)
+//
+//    // 特殊限制：
+//    // 1. 无lower_bound/upper_bound
+//    // 2. 迭代器不支持++/--遍历（无序）
+//}
+//
+//// 4. bitset 示例
+//void bitset_example() {
+//    std::bitset<100> bs;            // 100位二进制数
+//
+//    // 位操作
+//    bs.set();                       // 所有位置1
+//    bs.reset();                     // 所有位置0
+//    bs.flip(3);                     // 第3位取反
+//    bs[5] = 1;                      // 单独访问某位
+//
+//    // 查询操作
+//    int cnt = bs.count();           // 1的个数 O(n)
+//    bool any = bs.any();            // 是否有1 O(n)
+//    bool none = bs.none();          // 是否全0 O(n)
+//
+//    // 位运算（返回新bitset）
+//    auto bs2 = ~bs;                 // 按位取反
+//    auto bs3 = bs & bs2;            // 按位与
+//    auto bs4 = bs | bs2;            // 按位或
+//    auto bs5 = bs ^ bs2;            // 按位异或
+//    auto bs6 = bs << 3;             // 左移
+//    auto bs7 = bs >> 2;             // 右移
+//}
+//
+//
+// //* 容器特性对比：
+// //*
+// //* 有序容器（set/map）：
+// //* - 基于红黑树实现，元素自动排序
+// //* - 操作时间复杂度 O(logn)
+// //* - 支持lower_bound/upper_bound
+// //*
+// //* 无序容器（unordered_xxx）：
+// //* - 基于哈希表实现
+// //* - 平均操作时间复杂度 O(1)
+// //* - 不支持有序相关操作
+// //*
+// //* bitset：
+// //* - 固定大小的位序列
+// //* - 支持各种位运算
+// //* - 适用于状态压缩、位标志等场景
+// //*
+// //* 注：multiset/multimap允许重复元素，erase(x)会删除所有x
+// //
