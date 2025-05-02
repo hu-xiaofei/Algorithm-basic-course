@@ -377,3 +377,227 @@
 //a^φ(n) ≡ 1 (mod n)
 //a的φ(n)次方除以n的余数是1
 
+//快速幂
+
+//#include <iostream>
+//#include <cstdio>  // 用于 scanf 和 printf
+//
+//using namespace std;
+//
+//typedef long long LL;  // 定义 long long 类型别名，防止溢出
+//
+////*
+//// * 快速幂取模函数：计算 a^k % p
+//// * @param a 底数
+//// * @param k 指数
+//// * @param p 模数
+//// * @return 计算结果 (a^k % p)
+//// 
+//int qmi(int a, int k, int p) {
+//    int res = 1;               // 初始化结果为 1
+//    while (k) {                // 当指数 k 不为 0 时循环
+//        if (k & 1)             // 如果 k 的二进制最低位是 1（奇数）
+//            res = (LL)res * a % p;  // 更新结果（注意强制转换防止溢出）
+//        k >>= 1;               // 右移一位，相当于 k /= 2
+//        a = (LL)a * a % p;     // 底数平方并取模
+//    }
+//    return res;
+//}
+//
+//int main() {
+//    int n;
+//    scanf("%d", &n);           // 输入测试用例数量
+//    while (n--) {              // 处理每个测试用例
+//        int a, k, p;
+//        scanf("%d%d%d", &a, &k, &p);  // 输入底数、指数、模数
+//        printf("%d\n", qmi(a, k, p));  // 输出 a^k % p
+//    }
+//    return 0;
+//}
+
+//快速幂求逆元
+
+//#include <iostream>
+//#include <cstdio>
+//
+//using namespace std;
+//
+//typedef long long LL;  // 防溢出
+//
+//int qmi(int a, int k, int p) {
+//    int res = 1;
+//    while (k) {
+//        if (k & 1) res = (LL)res * a % p;  // 如果当前二进制位为1，累乘到结果
+//        k >>= 1;                           // 右移一位，相当于 k /= 2
+//        a = (LL)a * a % p;                 // 底数平方
+//    }
+//    return res;
+//}
+//
+//int main() {
+//    int n;
+//    scanf("%d", &n);          // 输入测试用例数量
+//    while (n--) {
+//        int a, p;
+//        scanf("%d%d", &a, &p); // 输入 a 和模数 p
+//        int res = qmi(a, p - 2, p); // 计算 a^{p-2} mod p（即逆元）
+//        if (a % p) printf("%d\n", res); // 如果 a 和 p 互质，输出逆元
+//        else puts("impossible");        // 否则输出不可能
+//    }
+//    return 0;
+//}
+
+//扩展欧几里得算法
+
+//#include <iostream>
+//using namespace std;
+//
+////a⋅x+b⋅y=gcd(a,b)
+//int exgcd(int a, int b, int& x, int& y) {
+//    if (!b) {                   // 递归终止条件：b = 0
+//        x = 1, y = 0;          // 此时 gcd(a, 0) = a，系数为 x=1, y=0
+//        return a;               // 返回 a 作为 GCD
+//    }
+//
+//    int d = exgcd(b, a % b, y, x); // 递归计算 gcd(b, a % b)，并交换 x 和 y
+//                                    //原理详见上欧几里得算法
+//    y -= a / b * x;             // 更新 y 的值
+//    return d;                   // 返回 GCD
+//}
+//
+//int main() {
+//    int n;
+//    scanf("%d", &n);           // 输入测试用例数量
+//
+//    while (n--) {              // 处理每个测试用例
+//        int a, b, x, y;
+//        scanf("%d%d", &a, &b); // 输入整数 a 和 b
+//
+//        exgcd(a, b, x, y);     // 计算 x 和 y
+//
+//        printf("%d %d\n", x, y); // 输出 x 和 y
+//    }
+//}
+
+//线性同余方程——扩展欧几里得算法
+
+//#include <iostream>
+//using namespace std;
+//
+//typedef long long LL;  // 定义长整型别名，防止乘法溢出
+//
+//int exgcd(int a, int b, int& x, int& y) {
+//    if (!b) {                   // 递归终止条件：b = 0
+//        x = 1, y = 0;          // 此时 gcd(a,0)=a，解为 x=1, y=0
+//        return a;               // 返回最大公约数
+//    }
+//    int d = exgcd(b, a % b, y, x); // 递归计算，交换x和y以简化回溯
+//    y -= a / b * x;             // 更新y的值
+//    return d;                   // 返回gcd(a,b)
+//}
+//
+//int main() {
+//    int n;
+//    scanf("%d", &n);           // 输入测试用例数量
+//
+//    while (n--) {              // 处理每个测试用例
+//        int a, b, m;
+//        scanf("%d%d%d", &a, &b, &m); // 输入a, b, m（方程: a*x ≡ b mod m）
+//        int x, y;
+//        int d = exgcd(a, m, x, y);   // 求解a*x + m*y = d（d是gcd(a,m)）
+//
+//        if (b % d) puts("impossible"); // 若d不整除b，方程无解
+//        else {
+//            // 解为 x0 = x * (b/d) mod (m/d)，调整到最小正整数
+//            LL x0 = (LL)x * (b / d) % m;
+//            x0 = (x0 % m + m) % m;    // 保证x0为正
+//            printf("%lld\n", x0);
+//        }
+//    }
+//    return 0;
+//}
+
+//中国剩余定理
+
+//高斯消元法
+
+//#include <iostream>
+//#include <algorithm> // 用于 swap()
+//#include <cmath> // fabs:用于计算浮点数的绝对值
+//
+//using namespace std;
+//
+//const int N = 110;
+//const double eps = 1e-6;  // 1e-6:是一个经验值,表示一个很小的数用于浮点数比较
+//                          //eps（epsilon）是一个误差容忍值，用于判断两个浮点数是否“近似相等”
+//
+//int n;
+//double a[N][N];  // 增广矩阵，存储系数和常数项
+//
+//int gauss() {
+//    int c, r;  // c: 列(column), r: 行(row)
+//
+//    // 高斯消元主循环
+//    for (c = 0, r = 0; c < n; c++) {
+//        // 1. 找到当前列绝对值最大的行
+//        int t = r;
+//        for (int i = r; i < n; i++)
+//            if (fabs(a[i][c]) > fabs(a[t][c]))
+//                t = i;
+//
+//        // 如果当前列全为0，跳过处理
+//        if (fabs(a[t][c]) < eps) continue;
+//
+//        // 2. 将最大行交换到当前行
+//        for (int i = c; i <= n; i++) swap(a[t][i], a[r][i]);
+//
+//        // 3. 将当前行的首元素变为1
+//        for (int i = n; i >= c; i--) a[r][i] /= a[r][c];
+//
+//        // 4. 用当前行消去下面所有行的当前列
+//        for (int i = r + 1; i < n; i++)  // 遍历当前行 r 下面的所有行 i
+//            if (fabs(a[i][c]) > eps)     // 如果 a[i][c] 不是 0（避免无效计算）
+//                for (int j = n; j >= c; j--)  // 从右往左更新行 i 的所有元素
+//                    a[i][j] -= a[r][j] * a[i][c]; // 行变换：行 i -= 行 r × a[i][c]
+//
+//        r++;  // 处理下一行
+//    }
+//
+//    // 判断解的情况
+//    if (r < n) {               // 如果有效行数 r < n，说明消元后存在全零行
+//        // 检查是否有矛盾方程
+//        for (int i = r; i < n; i++) // 检查所有剩余行
+//            if (fabs(a[i][n]) > eps)// 如果常数项不为 0
+//                return 2;           // 无解（矛盾方程）
+//        return 1;                   // 否则有无穷多解
+//    }
+//
+//    // 回代求解
+//    for (int i = n - 1; i >= 0; i--)      // 从最后一行往上回代
+//        for (int j = i + 1; j < n; j++)   // 遍历当前行右边的所有列
+//            a[i][n] -= a[i][j] * a[j][n]; // 更新常数项：减去已知变量的贡献
+//
+//    return 0; // 有唯一解
+//}
+//
+//int main() {
+//    cin >> n;  // 输入方程个数/未知数个数
+//
+//    // 输入增广矩阵
+//    for (int i = 0; i < n; i++)
+//        for (int j = 0; j < n + 1; j++)
+//            cin >> a[i][j];
+//
+//    // 调用高斯消元
+//    int t = gauss();
+//
+//    // 输出结果
+//    if (t == 0) {
+//        // 唯一解，输出解向量
+//        for (int i = 0; i < n; i++) printf("%.2lf\n", a[i][n]);
+//    }
+//    else if (t == 1) puts("Infinite group solutions");  // 无穷多解
+//    else puts("No solution");  // 无解
+//
+//    return 0;
+//}
