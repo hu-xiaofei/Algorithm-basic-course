@@ -601,3 +601,359 @@
 //
 //    return 0;
 //}
+
+//求组合数1——递推思想
+
+//#include <iostream>
+//#include <algorithm>  // 包含算法库，虽然这里没用到但习惯性保留
+//
+//using namespace std;  // 使用标准命名空间
+//
+//const int N = 2010;      // 定义组合数表的最大范围
+//const int mod = 1e9 + 7; // 定义模数，10^9+7是常用的大质数
+//
+//int c[N][N];  // 定义组合数表，c[a][b]表示C(a,b)即从a个中选b个的组合数
+//
+//// 初始化函数：预计算所有可能的组合数
+//void init()
+//{
+//    // 遍历所有可能的a值（0到N-1）
+//    for (int i = 0; i < N; i++)
+//        // 对于每个a，遍历所有可能的b值（0到a，因为b>a时C(a,b)=0）
+//        for (int j = 0; j <= i; j++)
+//            if (!j)
+//                // 基本情况：C(a,0) = 1（从a个中选0个只有1种方法）
+//                c[i][j] = 1;
+//            else
+//                // 递推公式：C(a,b) = C(a-1,b) + C(a-1,b-1)
+//                // 并对结果取模防止溢出
+//                c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % mod;
+//}
+//
+//int main()
+//{
+//    init();  // 程序开始先初始化组合数表
+//
+//    int n;   // 定义查询次数
+//    scanf("%d", &n);  // 读取查询次数
+//
+//    // 处理每个查询
+//    while (n--)
+//    {
+//        int a, b;
+//        scanf("%d%d", &a, &b);  // 读取a和b
+//        printf("%d\n", c[a][b]); // 直接输出预计算好的结果
+//        // 注意：这里假设输入的a<N且b<=a，实际应用中可能需要检查
+//    }
+//
+//    return 0;  // 程序正常结束
+//}
+
+//求组合数2——预处理思想
+
+//#include <iostream>
+//#include <algorithm>  // 包含算法库，虽然这里没用到但习惯性保留
+//
+//using namespace std;  // 使用标准命名空间
+//
+//typedef long long LL;  // 定义LL为long long类型，防止计算时溢出
+//const int N = 100010;  // 预处理的最大范围
+//const int mod = 1e9 + 7;  // 常用的质数模数
+//
+//int fact[N];    // 存储阶乘 fact[i] = i! % mod
+//int infact[N];  // 存储阶乘的逆元 infact[i] = (i!)^-1 % mod
+//
+//// 快速幂算法：计算 a^k % p
+//int qmi(int a, int k, int p)
+//{
+//    int res = 1;  // 初始化结果为1
+//    while (k)
+//    {
+//        if (k & 1) res = (LL)res * a % p;  // 如果k的二进制最低位是1，乘上a
+//        a = (LL)a * a % p;  // a平方
+//        k >>= 1;  // k右移一位
+//    }
+//    return res;
+//}
+//
+//int main()
+//{
+//    // 初始化阶乘和阶乘逆元数组
+//    fact[0] = infact[0] = 1;  // 0! = 1，0!的逆元也是1
+//
+//    // 预处理计算1~N-1的阶乘和它们的逆元
+//    for (int i = 1; i < N; i++)
+//    {
+//        fact[i] = (LL)fact[i - 1] * i % mod;  // 计算i! = (i-1)! * i
+//        // 计算i!的逆元 = ((i-1)!的逆元) * (i的逆元)
+//        // 使用费马小定理：i的逆元 = i^(mod-2) % mod
+//        infact[i] = (LL)infact[i - 1] * qmi(i, mod - 2, mod) % mod;
+//    }
+//
+//    int n;  // 查询次数
+//    scanf("%d", &n);  // 读取查询次数
+//
+//    // 处理每个查询
+//    while (n--)
+//    {
+//        int a, b;
+//        scanf("%d%d", &a, &b);  // 读取a和b
+//
+//        // 计算组合数C(a,b) = a! / (b! * (a-b)!)
+//        // 在模运算下转换为：a! * (b!)^-1 * ((a-b)!)^-1 % mod
+//        printf("%d\n", (LL)fact[a] * infact[b] % mod * infact[a - b] % mod);
+//    }
+//
+//    return 0;
+//}
+
+//求组合数3——卢卡斯定理
+
+////卢卡斯定理适用于大组合数取模（a, b 极大，p 是质数）
+//#include <iostream>
+//using namespace std;
+//typedef long long LL;
+//
+//int p;
+//
+//// 快速幂计算 a^k % p
+//int qmi(int a, int k) {
+//    int res = 1;
+//    while (k) {
+//        if (k & 1) res = (LL)res * a % p;  // 如果k的二进制最低位是1，乘上a
+//        a = (LL)a * a % p;  // a平方
+//        k >>= 1;  // k右移一位
+//    }
+//    return res;
+//}
+//
+//// 计算 C(a, b) % p（a, b < p）
+//int C(int a, int b) {
+//    int res = 1;
+//    for (int i = 1, j = a; i <= b; i++, j--) {
+//        res = (LL)res * j % p;  // 计算分子：a * (a-1) * ... * (a-b+1)
+//        res = (LL)res * qmi(i, p - 2) % p;  // 乘以分母的逆元：1/i! ≡ i^(p-2) mod p
+//    }
+//    return res;
+//}
+//
+//// 卢卡斯定理递归计算 C(a, b) % p
+//int lucas(LL a, LL b) {
+//    if (a < p && b < p) return C(a, b);  // 递归终止条件
+//    return (LL)C(a % p, b % p) * lucas(a / p, b / p) % p;  // 递归分解
+//    //卢卡斯定理直接用，别管证明了
+//}
+//
+//int main() {
+//    int n;
+//    cin >> n;  // 输入查询次数
+//    while (n--) {
+//        LL a, b;
+//        cin >> a >> b >> p;  // 输入a, b, p（p必须是质数）
+//        cout << lucas(a, b) << endl;  // 输出C(a, b) % p
+//    }
+//    return 0;
+//}
+
+//求组合数4——分解质因数
+
+//#include <iostream>
+//#include <vector>
+//using namespace std;
+//
+//const int N = 5010;
+//int primes[N], cnt;     // 存储所有≤N的质数
+//int sum[N];             // 存储每个质数的指数
+//bool st[N];             // 筛法标记数组
+//
+//// （线性筛）
+//void get_primes(int n) {
+//    for (int i = 2; i <= n; i++) {
+//        if (!st[i]) primes[cnt++] = i;  // i是质数，加入primes数组
+//        for (int j = 0; primes[j] <= n / i; j++) {
+//            st[primes[j] * i] = true;   // 筛掉合数 primes[j]*i
+//            if (i % primes[j] == 0) break;  // 保证每个合数只被最小质因子筛掉
+//        }
+//    }
+//}
+//
+//// 计算n!中包含质数p的指数（Legendre公式）
+//int get(int n, int p) {
+//    int res = 0;
+//    while (n) {
+//        res += n / p;  // 累加p的倍数贡献
+//        n /= p;        // 计算更高次幂的贡献
+//    }
+//    return res;
+//}
+//
+//// 高精度乘法：大整数a × 小整数b
+//vector<int> mul(vector<int> a, int b) {
+//    vector<int> c;
+//    int t = 0;  // 进位
+//    for (int i = 0; i < a.size(); i++) {
+//        t += a[i] * b;      // 当前位乘积 + 进位
+//        c.push_back(t % 10); // 取个位数
+//        t /= 10;            // 计算进位
+//    }
+//    while (t) {             // 处理剩余进位
+//        c.push_back(t % 10);
+//        t /= 10;
+//    }
+//    return c;
+//}
+//
+//int main() {
+//    int a, b;
+//    cin >> a >> b;  // 输入a和b
+//
+//    // 1. 筛出所有≤a的质数
+//    get_primes(a);
+//
+//    // 2. 计算组合数C(a,b)的质因数分解
+//    for (int i = 0; i < cnt; i++) {
+//        int p = primes[i];
+//        // 用Legendre公式计算C(a,b)中p的指数
+//        sum[i] = get(a, p) - get(b, p) - get(a - b, p);
+//        //即a!/(b!*(a-b)!)
+//    }
+//
+//    // 3. 高精度计算最终结果
+//    vector<int> res;
+//    res.push_back(1);  // 初始化为1
+//
+//    // 将质因数的乘积计算出来
+//    for (int i = 0; i < cnt; i++)
+//        for (int j = 0; j < sum[i]; j++)
+//            res = mul(res, primes[i]);  // 连乘primes[i]^sum[i]
+//
+//    // 4. 输出结果（逆序打印）
+//    for (int i = res.size() - 1; i >= 0; i--)
+//        printf("%d", res[i]);
+//    puts("");
+//
+//    return 0;
+//}
+
+//卡特兰数
+
+//#include <iostream>
+//#include <algorithm>
+//using namespace std;
+//
+//typedef long long LL;  // 使用long long防止溢出
+//const int mod = 1e9 + 7;  // 标准质数模数
+//
+//// 快速幂函数：计算 a^k % p
+//int qmi(int a, int k, int p) {
+//    int res = 1;
+//    while (k) {
+//        if (k & 1) res = (LL)res * a % p;  // 如果k的最低位是1，乘上a
+//        a = (LL)a * a % p;  // a平方
+//        k >>= 1;  // k右移一位
+//    }
+//    return res;
+//}
+//
+//int main() {
+//    int n;
+//    cin >> n;  // 输入n，计算第n个卡特兰数
+//
+//    int a = 2 * n, b = n;  // 卡特兰数公式中的C(2n, n)
+//    int res = 1;
+//
+//    // 计算分子部分：(2n)! / (n)! = (2n) * (2n-1) * ... * (n+1)
+//    for (int i = a; i > a - b; i--)
+//        res = (LL)res * i % mod;
+//
+//    // 计算分母部分的逆元：1 / (n)! = (n!)^(mod-2) % mod
+//    for (int i = 1; i <= b; i++)
+//        res = (LL)res * qmi(i, mod - 2, mod) % mod;
+//
+//    // 卡特兰数公式的额外除法转乘法：(C(2n, n) / (n+1)) 
+//    res = (LL)res * qmi(n + 1, mod - 2, mod) % mod;
+//
+//    cout << res << endl;  // 输出结果
+//    return 0;
+//}
+
+//容斥原理
+
+//Nim游戏
+
+//#include <iostream>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//int main()
+//{
+//    int n;          // 表示石子堆的数量
+//    int res = 0;    // 用于存储所有石子堆数量的异或结果（初始化为0）
+//
+//    scanf("%d", &n); // 输入石子堆的数量n
+//    while (n--)    // 循环读取每一堆的石子数量（共n堆）
+//    {
+//        int x;       // 当前堆的石子数量
+//        scanf("%d", &x); // 输入当前堆的石子数量x
+//        res ^= x;    // 将当前堆的石子数量x与res进行异或运算（关键步骤）
+//    }
+//
+//    if (res) puts("Yes"); // 如果res不为0，输出"Yes"（先手必胜）
+//    else puts("No");      // 否则输出"No"（先手必败）
+//
+//    return 0;    // 退出程序
+//}
+
+//Nim游戏——集合
+
+#include <iostream>
+#include <unordered_set>
+#include <cstring>
+using namespace std;
+
+const int N = 110, M = 10010;  // N: 最大石子堆数, M: 最大石子数
+int s[N], f[M];                // s[]: 每次可取的石子数集合, f[]: SG函数值的记忆化存储
+int m, n;                      // m: 可取石子数的规则数, n: 实际石子堆数
+
+// 计算x的SG函数值（关键函数）
+int sg(int x) {
+    if (f[x] != -1) return f[x];  // 记忆化：已计算过则直接返回
+    unordered_set<int> S;          // 存储x的所有后继状态的SG值
+
+    // 遍历所有可能的取法
+    for (int i = 0; i < m; i++) {
+        int sum = s[i];           // 当前规则允许取的石子数
+        if (x >= sum) {
+            S.insert(sg(x - sum)); // 递归计算后继状态的SG值并存入集合
+                                   //S.insert(value) 向集合 S 中插入一个元素 value
+        }
+    }
+
+    // 求Mex（最小非负整数不在S中）
+    for (int i = 0; ; i++) {
+        if (!S.count(i)) {         // S.count(value) 检查集合 S 中是否存在元素 value
+            return f[x] = i;       // 找到Mex并存入记忆化数组
+        }
+    }
+}
+
+int main() {
+    cin >> m;
+    for (int i = 0; i < m; i++) cin >> s[i];  // 输入可取石子数的规则
+    cin >> n;
+    memset(f, -1, sizeof f);       // 初始化SG函数记忆化数组为-1（未计算）
+    int res = 0;
+
+    // 处理每堆石子
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;                  // 当前堆的石子数
+        res ^= sg(x);              // 异或各堆的SG值
+    }
+
+    // 判断胜负
+    if (res) puts("Yes");          // 异或结果非零，先手必胜
+    else puts("No");               // 否则先手必败
+    return 0;
+}
